@@ -18,8 +18,6 @@
  */
 package org.apache.iceberg.data.avro;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

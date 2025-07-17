@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
@@ -289,7 +288,6 @@ public class TestPartitionPruning {
 
     assertAccessOnDataFiles(originTableLocation, table, partCondition);
   }
-
 
   private Table createTable(File originTableLocation) {
     String trackedTableLocation = CountOpenLocalFileSystem.convertPath(originTableLocation);

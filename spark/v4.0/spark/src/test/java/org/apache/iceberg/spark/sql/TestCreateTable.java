@@ -24,8 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.UUID;
 import org.apache.iceberg.BaseTable;
 import org.apache.iceberg.ParameterizedTestExtension;

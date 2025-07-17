@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -603,12 +602,7 @@ public class TestCreateActions extends CatalogTestBase {
                 "CAST(id AS FLOAT) col2",
                 "CAST(id AS LONG) col3");
     rowDataset.write().mode(SaveMode.Append).parquet(temp.toString());
-    spark
-        .read()
-        .schema(rowDataset.schema())
-        .parquet(temp.toString())
-        .write()
-        .saveAsTable(tblName);
+    spark.read().schema(rowDataset.schema()).parquet(temp.toString()).write().saveAsTable(tblName);
     List<Object[]> expectedBeforeAddColumn = sql("SELECT * FROM %s ORDER BY col0", tblName);
     List<Object[]> expectedAfterAddColumn =
         sql("SELECT col0, null, col1, col2, col3 FROM %s ORDER BY col0", tblName);
@@ -770,13 +764,14 @@ public class TestCreateActions extends CatalogTestBase {
     File parquetFile =
         Arrays.stream(
                 Preconditions.checkNotNull(
-                    temp.toFile().listFiles(
-                        new FilenameFilter() {
-                          @Override
-                          public boolean accept(File dir, String name) {
-                            return name.endsWith("parquet");
-                          }
-                        })))
+                    temp.toFile()
+                        .listFiles(
+                            new FilenameFilter() {
+                              @Override
+                              public boolean accept(File dir, String name) {
+                                return name.endsWith("parquet");
+                              }
+                            })))
             .findAny()
             .get();
 

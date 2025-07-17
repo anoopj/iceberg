@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.common.testing.GcFinalization;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -245,9 +244,7 @@ public class TestManifestCaching {
         "hadoop",
         ImmutableMap.<String, String>builder()
             .putAll(catalogProperties)
-            .put(
-                CatalogProperties.WAREHOUSE_LOCATION,
-                temp.toFile().getAbsolutePath())
+            .put(CatalogProperties.WAREHOUSE_LOCATION, temp.toFile().getAbsolutePath())
             .buildOrThrow());
     return hadoopCatalog;
   }

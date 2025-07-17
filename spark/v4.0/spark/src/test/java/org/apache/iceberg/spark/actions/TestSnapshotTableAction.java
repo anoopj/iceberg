@@ -21,7 +21,6 @@ package org.apache.iceberg.spark.actions;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.iceberg.ParameterizedTestExtension;
