@@ -77,8 +77,7 @@ public class TestTableSerialization {
     Map<String, String> props =
         ImmutableMap.of("k1", "v1", TableProperties.OBJECT_STORE_ENABLED, isObjectStoreEnabled);
 
-    File tableLocation = Files.createTempDirectory(temp, "junit").toFile();
-    assertThat(tableLocation.delete()).isTrue();
+    File tableLocation = temp.toFile();
 
     this.table = TABLES.create(SCHEMA, SPEC, SORT_ORDER, props, tableLocation.toString());
   }

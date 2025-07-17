@@ -68,10 +68,7 @@ public class TestFileIOSerialization {
   public void initTable() throws IOException {
     Map<String, String> props = ImmutableMap.of("k1", "v1", "k2", "v2");
 
-    File tableLocation = Files.createTempDirectory(temp, "junit").toFile();
-    assertThat(tableLocation.delete()).isTrue();
-
-    this.table = TABLES.create(SCHEMA, SPEC, SORT_ORDER, props, tableLocation.toString());
+    this.table = TABLES.create(SCHEMA, SPEC, SORT_ORDER, props, temp.toString());
   }
 
   @Test

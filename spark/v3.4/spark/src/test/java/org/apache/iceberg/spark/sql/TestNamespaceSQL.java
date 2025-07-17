@@ -261,8 +261,7 @@ public class TestNamespaceSQL extends CatalogTestBase {
         .as("Namespace should not already exist")
         .isFalse();
 
-    File location = File.createTempFile("junit", null, temp.toFile());
-    assertThat(location.delete()).isTrue();
+    File location = temp.resolve("test-file").toFile();
 
     sql("CREATE NAMESPACE %s LOCATION '%s'", fullNamespace, location);
 

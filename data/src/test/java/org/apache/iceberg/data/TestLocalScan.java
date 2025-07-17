@@ -196,7 +196,7 @@ public class TestLocalScan {
 
   @BeforeEach
   public void createTables() throws IOException {
-    File location = Files.createTempDirectory(tempDir.toPath(), "shared").toFile();
+    File location = new File(tempDir, "shared");
     this.sharedTableLocation = location.toString();
     this.sharedTable =
         TABLES.create(
@@ -227,8 +227,7 @@ public class TestLocalScan {
   public void testRandomData() throws IOException {
     List<Record> expected = RandomGenericData.generate(SCHEMA, 1000, 435691832918L);
 
-    File location = Files.createTempDirectory(tempDir.toPath(), "junit").toFile();
-    assertThat(location.delete()).isTrue();
+    File location = new File(tempDir, "junit");
 
     Table table =
         TABLES.create(
@@ -554,8 +553,7 @@ public class TestLocalScan {
             required(3, "date", Types.DateType.get()),
             required(4, "time", Types.TimeType.get()));
 
-    File tableLocation = Files.createTempDirectory(tempDir.toPath(), "junit").toFile();
-    assertThat(tableLocation.delete()).isTrue();
+    File tableLocation = new File(tempDir, "junit");
 
     Table table =
         TABLES.create(

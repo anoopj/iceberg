@@ -247,7 +247,7 @@ public class TestManifestCaching {
             .putAll(catalogProperties)
             .put(
                 CatalogProperties.WAREHOUSE_LOCATION,
-                Files.createTempDirectory(temp, "junit").toFile().getAbsolutePath())
+                temp.toFile().getAbsolutePath())
             .buildOrThrow());
     return hadoopCatalog;
   }

@@ -42,7 +42,7 @@ public class TestSnapshotTableAction extends CatalogTestBase {
 
   @TestTemplate
   public void testSnapshotWithParallelTasks() throws IOException {
-    String location = Files.createTempDirectory(temp, "junit").toFile().toString();
+    String location = temp.toString();
     sql(
         "CREATE TABLE %s (id bigint NOT NULL, data string) USING parquet LOCATION '%s'",
         SOURCE_NAME, location);

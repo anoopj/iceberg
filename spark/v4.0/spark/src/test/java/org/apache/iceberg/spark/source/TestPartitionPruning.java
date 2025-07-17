@@ -258,7 +258,7 @@ public class TestPartitionPruning {
   }
 
   private void runTest(String filterCond, Predicate<Row> partCondition) {
-    File originTableLocation = createTempDir();
+    File originTableLocation = temp.toFile();
     assertThat(originTableLocation).as("Temp folder should exist").exists();
 
     Table table = createTable(originTableLocation);
@@ -290,13 +290,6 @@ public class TestPartitionPruning {
     assertAccessOnDataFiles(originTableLocation, table, partCondition);
   }
 
-  private File createTempDir() {
-    try {
-      return Files.createTempDirectory(temp, "junit").toFile();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   private Table createTable(File originTableLocation) {
     String trackedTableLocation = CountOpenLocalFileSystem.convertPath(originTableLocation);

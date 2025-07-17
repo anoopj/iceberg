@@ -52,9 +52,7 @@ public class TestScanDataFileColumns {
 
   @BeforeEach
   public void createTables() throws IOException {
-    File location = Files.createTempDirectory(temp, "junit").toFile();
-    assertThat(location.delete()).isTrue();
-    this.tableLocation = location.toString();
+    this.tableLocation = temp.toFile().toString();
     this.table =
         TABLES.create(
             SCHEMA,

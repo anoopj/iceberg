@@ -257,8 +257,7 @@ public class TestPartitionValues {
 
     // write out an Avro data file with all of the data types for source data
     List<GenericData.Record> expected = RandomData.generateList(source.schema(), 2, 128735L);
-    File avroData = File.createTempFile("data", ".avro", temp.toFile());
-    assertThat(avroData.delete()).isTrue();
+    File avroData = temp.resolve("data.avro").toFile();
     try (FileAppender<GenericData.Record> appender =
         Avro.write(Files.localOutput(avroData)).schema(source.schema()).build()) {
       appender.addAll(expected);
@@ -334,8 +333,7 @@ public class TestPartitionValues {
 
     // write out an Avro data file with all of the data types for source data
     List<GenericData.Record> expected = RandomData.generateList(source.schema(), 2, 128735L);
-    File avroData = File.createTempFile("data", ".avro", temp.toFile());
-    assertThat(avroData.delete()).isTrue();
+    File avroData = temp.resolve("data.avro").toFile();
     try (FileAppender<GenericData.Record> appender =
         Avro.write(Files.localOutput(avroData)).schema(source.schema()).build()) {
       appender.addAll(expected);

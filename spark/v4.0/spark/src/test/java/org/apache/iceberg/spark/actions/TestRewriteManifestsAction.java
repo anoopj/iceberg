@@ -1063,8 +1063,7 @@ public class TestRewriteManifestsAction extends TestBase {
   }
 
   private ManifestFile writeManifest(Table table, List<DataFile> files) throws IOException {
-    File manifestFile = File.createTempFile("generated-manifest", ".avro", temp.toFile());
-    assertThat(manifestFile.delete()).isTrue();
+    File manifestFile = temp.resolve("generated-manifest.avro").toFile();
     OutputFile outputFile = table.io().newOutputFile(manifestFile.getCanonicalPath());
 
     ManifestWriter<DataFile> writer =

@@ -452,11 +452,8 @@ public abstract class DeleteFileIndexTestBase<
 
   @TestTemplate
   public void testUnpartitionedTableSequenceNumbers() throws IOException {
-    File location = Files.createTempDirectory(temp, "junit").toFile();
-    assertThat(location.delete()).isTrue();
-
     Table unpartitioned =
-        TestTables.create(location, "unpartitioned", SCHEMA, PartitionSpec.unpartitioned(), 2);
+        TestTables.create(tableDir, "unpartitioned", SCHEMA, PartitionSpec.unpartitioned(), 2);
 
     // add data, pos deletes, and eq deletes in the same sequence number
     // the position deletes will be applied to the data file, but the equality deletes will not

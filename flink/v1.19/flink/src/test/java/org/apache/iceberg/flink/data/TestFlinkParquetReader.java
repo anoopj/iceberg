@@ -177,8 +177,7 @@ public class TestFlinkParquetReader extends DataTestBase {
             optional(2, "topbytes", Types.BinaryType.get()));
     org.apache.avro.Schema avroSchema = AvroSchemaUtil.convert(schema.asStruct());
 
-    File testFile = File.createTempFile("junit", null, temp.toFile());
-    assertThat(testFile.delete()).isTrue();
+    File testFile = temp.resolve("test-file").toFile();
 
     ParquetWriter<GenericRecord> writer =
         AvroParquetWriter.<GenericRecord>builder(new Path(testFile.toURI()))
@@ -216,8 +215,7 @@ public class TestFlinkParquetReader extends DataTestBase {
 
   private void writeAndValidate(
       Iterable<Record> iterable, Schema writeSchema, Schema expectedSchema) throws IOException {
-    File testFile = File.createTempFile("junit", null, temp.toFile());
-    assertThat(testFile.delete()).isTrue();
+    File testFile = temp.resolve("test-file").toFile();
 
     try (FileAppender<Record> writer =
         Parquet.write(Files.localOutput(testFile))

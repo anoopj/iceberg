@@ -60,8 +60,7 @@ public class TestFlinkOrcReaderWriter extends DataTestBase {
     RowType flinkSchema = FlinkSchemaUtil.convert(schema);
     List<RowData> expectedRows = Lists.newArrayList(RandomRowData.convert(schema, expectedRecords));
 
-    File recordsFile = File.createTempFile("junit", null, temp.toFile());
-    assertThat(recordsFile.delete()).isTrue();
+    File recordsFile = temp.resolve("test-file").toFile();
 
     // Write the expected records into ORC file, then read them into RowData and assert with the
     // expected Record list.
@@ -87,8 +86,7 @@ public class TestFlinkOrcReaderWriter extends DataTestBase {
       assertThat(rows).isExhausted();
     }
 
-    File rowDataFile = File.createTempFile("junit", null, temp.toFile());
-    assertThat(rowDataFile.delete()).isTrue();
+    File rowDataFile = temp.resolve("test-file").toFile();
 
     // Write the expected RowData into ORC file, then read them into Record and assert with the
     // expected RowData list.

@@ -56,8 +56,7 @@ public class TestGenericData extends DataTestBase {
   private void writeAndValidate(Schema writeSchema, Schema expectedSchema, List<Record> expected)
       throws IOException {
 
-    File testFile = File.createTempFile("junit", null, temp.toFile());
-    assertThat(testFile.delete()).isTrue();
+    File testFile = temp.resolve("test-file").toFile();
 
     try (FileAppender<Record> writer =
         Avro.write(Files.localOutput(testFile))

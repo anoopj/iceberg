@@ -286,10 +286,7 @@ public class TestCreateTable extends CatalogTestBase {
         .as("Table should not already exist")
         .isFalse();
 
-    File tableLocation = Files.createTempDirectory(temp, "junit").toFile();
-    assertThat(tableLocation.delete()).isTrue();
-
-    String location = "file:" + tableLocation;
+    String location = "file:" + temp;
 
     sql(
         "CREATE TABLE %s "
