@@ -38,6 +38,8 @@ import org.apache.iceberg.events.CreateSnapshotEvent;
 import org.apache.iceberg.exceptions.ValidationException;
 import org.apache.iceberg.expressions.Expression;
 import org.apache.iceberg.expressions.Expressions;
+import org.apache.iceberg.expressions.ManifestEvaluator;
+import org.apache.iceberg.expressions.Projections;
 import org.apache.iceberg.io.CloseableIterable;
 import org.apache.iceberg.io.CloseableIterator;
 import org.apache.iceberg.io.FileIO;
@@ -836,7 +838,10 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
     List<ManifestFile> newDeleteManifests = history.first();
     Set<Long> newSnapshotIds = history.second();
 
-    Tasks.foreach(newDeleteManifests)
+    Iterable<ManifestFile> matchingManifests =
+        filterManifestsByPartition(base, conflictDetectionFilter, newDeleteManifests);
+
+    Tasks.foreach(matchingManifests)
         .stopOnFailure()
         .throwFailureWhenFinished()
         .executeWith(workerPool())
@@ -864,6 +869,25 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private Iterable<ManifestFile> filterManifestsByPartition(
+      TableMetadata base, Expression conflictDetectionFilter, List<ManifestFile> manifests) {
+    if (conflictDetectionFilter == null || conflictDetectionFilter == Expressions.alwaysTrue()) {
+      return manifests;
+    }
+
+    Map<Integer, PartitionSpec> specsById = base.specsById();
+    return Iterables.filter(
+        manifests,
+        manifest -> {
+          PartitionSpec spec = specsById.get(manifest.partitionSpecId());
+          Expression partitionFilter =
+              Projections.inclusive(spec, caseSensitive).project(conflictDetectionFilter);
+          ManifestEvaluator evaluator =
+              ManifestEvaluator.forPartitionFilter(partitionFilter, spec, caseSensitive);
+          return evaluator.eval(manifest);
+        });
   }
 
   // returns newly added manifests and snapshot IDs between the starting and parent snapshots
