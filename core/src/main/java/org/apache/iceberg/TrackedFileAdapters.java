@@ -18,6 +18,7 @@
  */
 package org.apache.iceberg;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ class TrackedFileAdapters {
 
   /** Shared base for all tracked file adapters. */
   private abstract static class TrackedFileAdapter<F extends ContentFile<F>>
-      implements ContentFile<F> {
+      implements ContentFile<F>, Serializable {
     private final TrackedFile file;
     private final PartitionSpec spec;
 
