@@ -322,8 +322,10 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
         appendedManifestsSummary);
   }
 
-  private SnapshotValidator validator() {
-    return new SnapshotValidator(ops(), caseSensitive);
+  private SnapshotValidator validator(
+      TableMetadata base, Long startingSnapshotId, Snapshot parent) {
+    return SnapshotValidator.forWindow(ops().io(), base, startingSnapshotId, parent)
+        .caseSensitive(caseSensitive);
   }
 
   /**
@@ -337,7 +339,7 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
    */
   protected void validateAddedDataFiles(
       TableMetadata base, Long startingSnapshotId, PartitionSet partitionSet, Snapshot parent) {
-    validator().validateAddedDataFiles(base, startingSnapshotId, partitionSet, parent);
+    validator(base, startingSnapshotId, parent).assertNoNewDataFiles(partitionSet);
   }
 
   /**
@@ -353,7 +355,7 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
       Long startingSnapshotId,
       Expression conflictDetectionFilter,
       Snapshot parent) {
-    validator().validateAddedDataFiles(base, startingSnapshotId, conflictDetectionFilter, parent);
+    validator(base, startingSnapshotId, parent).assertNoNewDataFiles(conflictDetectionFilter);
   }
 
   /**
@@ -367,14 +369,8 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
    */
   protected void validateNoNewDeletesForDataFiles(
       TableMetadata base, Long startingSnapshotId, Iterable<DataFile> dataFiles, Snapshot parent) {
-    validator()
-        .validateNoNewDeletesForDataFiles(
-            base,
-            startingSnapshotId,
-            null,
-            dataFiles,
-            newDataFilesDataSequenceNumber != null,
-            parent);
+    validator(base, startingSnapshotId, parent)
+        .assertNoNewDeletesForDataFiles(null, dataFiles, newDataFilesDataSequenceNumber != null);
   }
 
   /**
@@ -393,9 +389,8 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
       Expression dataFilter,
       Iterable<DataFile> dataFiles,
       Snapshot parent) {
-    validator()
-        .validateNoNewDeletesForDataFiles(
-            base, startingSnapshotId, dataFilter, dataFiles, false, parent);
+    validator(base, startingSnapshotId, parent)
+        .assertNoNewDeletesForDataFiles(dataFilter, dataFiles, false);
   }
 
   /**
@@ -409,7 +404,7 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
    */
   protected void validateNoNewDeleteFiles(
       TableMetadata base, Long startingSnapshotId, Expression dataFilter, Snapshot parent) {
-    validator().validateNoNewDeleteFiles(base, startingSnapshotId, dataFilter, parent);
+    validator(base, startingSnapshotId, parent).assertNoNewDeleteFiles(dataFilter);
   }
 
   /**
@@ -423,7 +418,7 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
    */
   protected void validateNoNewDeleteFiles(
       TableMetadata base, Long startingSnapshotId, PartitionSet partitionSet, Snapshot parent) {
-    validator().validateNoNewDeleteFiles(base, startingSnapshotId, partitionSet, parent);
+    validator(base, startingSnapshotId, parent).assertNoNewDeleteFiles(partitionSet);
   }
 
   /**
@@ -437,7 +432,7 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
    */
   protected void validateDeletedDataFiles(
       TableMetadata base, Long startingSnapshotId, Expression dataFilter, Snapshot parent) {
-    validator().validateDeletedDataFiles(base, startingSnapshotId, dataFilter, parent);
+    validator(base, startingSnapshotId, parent).assertNoDeletedDataFiles(dataFilter);
   }
 
   /**
@@ -451,7 +446,7 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
    */
   protected void validateDeletedDataFiles(
       TableMetadata base, Long startingSnapshotId, PartitionSet partitionSet, Snapshot parent) {
-    validator().validateDeletedDataFiles(base, startingSnapshotId, partitionSet, parent);
+    validator(base, startingSnapshotId, parent).assertNoDeletedDataFiles(partitionSet);
   }
 
   protected void setNewDataFilesDataSequenceNumber(long sequenceNumber) {
@@ -465,14 +460,8 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
       boolean skipDeletes,
       Expression conflictDetectionFilter,
       Snapshot parent) {
-    validator()
-        .validateDataFilesExist(
-            base,
-            startingSnapshotId,
-            requiredDataFiles,
-            skipDeletes,
-            conflictDetectionFilter,
-            parent);
+    validator(base, startingSnapshotId, parent)
+        .assertDataFilesExist(requiredDataFiles, skipDeletes, conflictDetectionFilter);
   }
 
   // validates there are no concurrently added DVs for referenced data files
@@ -481,14 +470,8 @@ abstract class MergingSnapshotProducer<ThisT> extends SnapshotProducer<ThisT> {
       Long startingSnapshotId,
       Expression conflictDetectionFilter,
       Snapshot parent) {
-    validator()
-        .validateAddedDVs(
-            base,
-            startingSnapshotId,
-            conflictDetectionFilter,
-            parent,
-            dvsByReferencedFile.keySet(),
-            workerPool());
+    validator(base, startingSnapshotId, parent)
+        .assertNoNewDVs(conflictDetectionFilter, dvsByReferencedFile.keySet(), workerPool());
   }
 
   @Override
