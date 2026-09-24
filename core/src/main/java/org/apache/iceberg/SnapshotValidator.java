@@ -87,16 +87,6 @@ class SnapshotValidator {
     this.parent = parent;
   }
 
-  /**
-   * Creates a validator for the changes committed between a starting snapshot and the current
-   * parent snapshot on a branch.
-   *
-   * @param io file IO used to read manifests
-   * @param base table metadata to validate against
-   * @param startingSnapshotId the snapshot current at the start of the operation, or null to
-   *     validate the whole history
-   * @param parent the current parent snapshot on the branch being validated
-   */
   static SnapshotValidator forWindow(
       FileIO io, TableMetadata base, Long startingSnapshotId, Snapshot parent) {
     return new SnapshotValidator(io, base, startingSnapshotId, parent);
